@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\User;
+
+class AdminController extends Controller
+{
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
+
+    public function usersList()
+    {
+        $users = User::paginate(20);
+        return view('admin.users', compact('users'));
+    }
+
+    public function banUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_banned = true;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User banned successfully.');
+    }
+
+    public function unbanUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_banned = false;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User unbanned successfully.');
+    }
+}
